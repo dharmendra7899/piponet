@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Piponet</string>
+    <string name="AdMob_AppId">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="AdMob_Banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="AdMob_Native">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="AdMob_Interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_OpenApp">ca-app-pub-3940256099942544/3419835294</string>
+</resources>

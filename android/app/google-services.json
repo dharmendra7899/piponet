@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "306599829309",
+    "project_id": "piponet-457bf",
+    "storage_bucket": "piponet-457bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306599829309:android:cf36a962dd7148f8556f54",
+        "android_client_info": {
+          "package_name": "com.example.piponet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD16eZ5NUuZ3XGEraEgSMi4NcM-Iqnt2A4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
