@@ -3,15 +3,17 @@ import 'package:provider/provider.dart';
 
 import '../../../customs/app_button.dart';
 import '../../../customs/app_text.dart';
+import '../../../customs/customAutocompleteDropDown.dart';
 import '../../../customs/customDropdown.dart';
-import '../../../customs/navigation.dart';
+import '../../../customs/toast_message.dart';
+import '../../../customs/validate_connectivity.dart';
 import '../../../customs/validator.dart';
 import '../../../providers/search_train_provider.dart';
 import '../../../styles/app_colors.dart';
-import '../fareEnquiry/fareDetails.dart';
 
 class SearchTrains extends StatefulWidget {
   SearchTrains({required this.title, required this.image, super.key});
+
   String title;
   String image;
 
@@ -87,7 +89,8 @@ class _SearchTrainsState extends State<SearchTrains> {
                               const SizedBox(
                                 height: 50,
                               ),
-                              CustomDropDown(
+                              CustomAutocompleteDropDown(
+                                onTextChange: (val) {},
                                 dropdownHeading: "From",
                                 dropDownInitialValue: trainProvider.fromStation,
                                 dropDownList: trainProvider.fromStationList,
@@ -96,18 +99,22 @@ class _SearchTrainsState extends State<SearchTrains> {
                                 onChange: (val) {
                                   setState(() {
                                     trainProvider.fromStation = val.toString();
+                                    trainProvider.notifyListeners();
                                   });
                                 },
                               ),
                               const SizedBox(
                                 height: 20,
                               ),
-                              CustomDropDown(
+                              CustomAutocompleteDropDown(
                                 dropdownHeading: "To",
                                 dropDownInitialValue: trainProvider.toStation,
                                 dropDownList: trainProvider.toStationList,
                                 hintText: "Select to station",
                                 height: 55,
+                                onTextChange: (val) {
+                                  //do someting
+                                },
                                 onChange: (val) {
                                   setState(() {
                                     trainProvider.toStation = val.toString();
@@ -133,6 +140,10 @@ class _SearchTrainsState extends State<SearchTrains> {
                                             color: appColors.borderColor),
                                       ),
                                       child: ListTile(
+                                          onTap: () {
+                                            trainProvider
+                                                .selectTrainDate(context);
+                                          },
                                           contentPadding: EdgeInsets.zero,
                                           visualDensity: const VisualDensity(
                                               horizontal: 0, vertical: -4),
@@ -151,10 +162,13 @@ class _SearchTrainsState extends State<SearchTrains> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               appText(
-                                                  title: "14-03-2024",
+                                                  title: trainProvider.date,
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 16,
-                                                  color: appColors.textColor),
+                                                  color: trainProvider.date ==
+                                                          "DD-MM-YYYY"
+                                                      ? appColors.appGray
+                                                      : appColors.textColor),
                                               Image.asset(
                                                 "assets/images/calender.png",
                                                 height: 20,
@@ -193,12 +207,27 @@ class _SearchTrainsState extends State<SearchTrains> {
                                 width: 180,
                                 child: AppButton(
                                   onPressed: () {
-                                    navigateTo(
+                                    validateConnectivity(
                                         context: context,
-                                        to: FareDetails(
-                                          title: "Train Details",
-                                        ));
+                                        provider: () async {
+                                          if (trainProvider.fromStation ==
+                                              null) {
+                                            showToast("Select from Stations");
+                                          } else if (trainProvider.toStation ==
+                                              null) {
+                                            showToast("Select to Stations");
+                                          } else if (trainProvider.date ==
+                                              "DD-MM-YYYY") {
+                                            showToast("Select Date first");
+                                          } else if (trainProvider.trainClass ==
+                                              null) {
+                                            showToast("Select Class");
+                                          } else {
+                                            trainProvider.searchTrains(context);
+                                          }
+                                        });
                                   },
+                                  isLoading: trainProvider.showLoader,
                                   borderRadius: 13,
                                   title: "Get Details",
                                   color: appColors.appGreen,

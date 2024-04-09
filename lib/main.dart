@@ -17,6 +17,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // MobileAds.instance.initialize();
   runApp(CustomProvider(
     loginState: state,
     child: const MyApp(),

@@ -244,8 +244,10 @@ class LeftDrawer extends StatelessWidget {
                     height: 12,
                   ),
                   InkWell(
-                    onTap: () =>
-                        navigateTo(context: context, to: const Notifications()),
+                    onTap: () {
+                      Navigator.pop(context);
+                      navigateTo(context: context, to: const Notifications());
+                    },
                     child: appText(
                         title: "Notifications",
                         fontWeight: FontWeight.w400,
@@ -256,7 +258,9 @@ class LeftDrawer extends StatelessWidget {
                     height: 20,
                   ),
                   InkWell(
-                    onTap: () => navigateTo(context: context, to: Profile()),
+                    onTap: () {
+                      navigateTo(context: context, to: Profile());
+                    },
                     child: appText(
                         title: "Profile",
                         fontWeight: FontWeight.w400,

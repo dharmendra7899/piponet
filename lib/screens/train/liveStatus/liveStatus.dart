@@ -6,6 +6,8 @@ import 'package:piponet/providers/details_status_provider.dart';
 import 'package:piponet/styles/app_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../../../customs/toast_message.dart';
+import '../../../customs/validate_connectivity.dart';
 import '../../../customs/validator.dart';
 import 'Widgets/pnrList.dart';
 import 'Widgets/searchWidget.dart';
@@ -31,6 +33,8 @@ class LiveStatus extends StatefulWidget {
 }
 
 class _LiveStatusState extends State<LiveStatus> {
+  TextEditingController textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -111,12 +115,13 @@ class _LiveStatusState extends State<LiveStatus> {
                                         color: appColors.textColor
                                             .withOpacity(0.8),
                                       ),
+                                      controller: textController,
                                       hintStyle: TextStyle(
                                         fontSize: 16,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w400,
-                                        color: appColors.textColor
-                                            .withOpacity(0.8),
+                                        color:
+                                            appColors.appGray.withOpacity(0.8),
                                       ),
                                     ),
                                     const SizedBox(
@@ -126,22 +131,38 @@ class _LiveStatusState extends State<LiveStatus> {
                                       width: 180,
                                       child: AppButton(
                                         onPressed: () {
-                                          setState(() {
-                                            if (widget.titleName ==
-                                                "PNR Status") {
-                                              statusProvider.isShowStatus =
-                                                  false;
-                                              statusProvider.isShowPNR = true;
-                                              setState(() {});
-                                            } else {
-                                              statusProvider.isShowPNR = false;
-                                              statusProvider.isShowStatus =
-                                                  true;
-                                              setState(() {});
-                                            }
-                                          });
+                                          validateConnectivity(
+                                              context: context,
+                                              provider: () async {
+                                                if (widget.titleName ==
+                                                    "PNR Status") {
+                                                  if (textController
+                                                      .text.isNotEmpty) {
+                                                    statusProvider.getPNRStatus(
+                                                        context,
+                                                        textController.text
+                                                            .toString());
+                                                  } else {
+                                                    showToast(
+                                                        "Enter PNR Number");
+                                                  }
+                                                } else {
+                                                  if (textController
+                                                      .text.isNotEmpty) {
+                                                    statusProvider
+                                                        .getLiveStatus(
+                                                            context,
+                                                            textController.text
+                                                                .toString());
+                                                  } else {
+                                                    showToast(
+                                                        "Enter Train Number/Name");
+                                                  }
+                                                }
+                                              });
                                         },
                                         borderRadius: 13,
+                                        isLoading: statusProvider.showLoader,
                                         title: widget.buttonText!,
                                         color: appColors.appGreen,
                                         height: 45,

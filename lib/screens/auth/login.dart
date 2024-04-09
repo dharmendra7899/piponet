@@ -90,6 +90,7 @@ class Login extends StatelessWidget {
                                   if (phoneNumber.text.isNotEmpty) {
                                     await authProvider.sendOTP(
                                         phoneNumber.text, context, true);
+                                    FocusScope.of(context).unfocus;
                                   } else {
                                     showToast("Enter Mobile Number first!");
                                   }

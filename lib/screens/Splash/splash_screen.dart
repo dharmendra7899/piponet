@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigation() {
     timer = Timer(const Duration(seconds: 3), () {
       var provider = Provider.of<AuthProvider>(context, listen: false);
-      Provider.of<BottomNavigationProvider>(context, listen: false).onTapped(0);
+      Provider.of<BottomNavigationProvider>(context, listen: false).onTapped(2);
       navigateRemoveUntil(
         context: context,
         to: provider.isUserLoggedIn

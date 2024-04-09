@@ -19,15 +19,16 @@ class AuthProvider extends ChangeNotifier {
   bool get showLoader => _showLoader;
 
   bool? _token = false;
+  String? _phoneNumber = "";
 
   bool? get token => _token;
+
+  String? get number => _phoneNumber;
 
   String? _userID = '';
   String? verificationID;
 
   String? get userID => _userID;
-
-  UserCredential? userCredential;
 
   AuthProvider(this._preferences) {
     _token = _preferences.getBool("token") ?? false;
@@ -56,8 +57,12 @@ class AuthProvider extends ChangeNotifier {
     return _preferences.getString("userID") ?? "";
   }
 
-  String get getToken {
-    return _preferences.getString("token") ?? "";
+  bool get getToken {
+    return _preferences.getBool("token") ?? false;
+  }
+
+  String get getNumber {
+    return _preferences.getString("number") ?? "";
   }
 
   setWalkthrough() {
@@ -69,39 +74,47 @@ class AuthProvider extends ChangeNotifier {
     validateConnectivity(
         context: context,
         provider: () async {
-          _setShowLoader(true);
-          FirebaseAuth auth = FirebaseAuth.instance;
-          await auth.verifyPhoneNumber(
-            phoneNumber: "+91$phoneNumber",
-            verificationCompleted: (PhoneAuthCredential credential) async {
-              await auth.signInWithCredential(credential);
-            },
-            verificationFailed: (FirebaseAuthException e) {
-              _setShowLoader(false);
-              showToast('Verification failed: ${e.message}');
-            },
-            codeSent: (String verification_Id, int? resendToken) {
-              _setShowLoader(false);
-              verificationID = verification_Id.toString();
-              notifyListeners();
-              showToast("OTP sent successfully.", isSuccess: true);
-              isLoginPage == true
-                  ? navigateTo(
-                      context: context, to: OTPVerify(number: phoneNumber))
-                  : null;
-            },
-            codeAutoRetrievalTimeout: (String verificationId) {
-              _setShowLoader(false);
-              showToast('Verification failed: $verificationId');
-            },
-            timeout: const Duration(
-                seconds: 60), // Timeout duration for OTP auto-retrieval
-          );
+          final FirebaseAuth _auth = FirebaseAuth.instance;
+          try {
+            _setShowLoader(true);
+
+            await _auth.verifyPhoneNumber(
+              phoneNumber: "+91$phoneNumber",
+              verificationCompleted: (PhoneAuthCredential credential) async {
+                _setShowLoader(false);
+                await _auth.signInWithCredential(credential);
+                print('Verification completed');
+                // Handle verification completed
+              },
+              verificationFailed: (FirebaseAuthException e) {
+                _setShowLoader(false);
+                showToast('Verification failed: ${e.message}');
+                // Handle verification failed
+              },
+              codeSent: (String verificationId, int? resendToken) {
+                _setShowLoader(false);
+                verificationID = verificationId;
+                showToast("OTP sent successfully.", isSuccess: true);
+                if (isLoginPage) {
+                  navigateTo(
+                      context: context, to: OTPVerify(number: phoneNumber));
+                }
+              },
+              codeAutoRetrievalTimeout: (String verificationId) {
+                _setShowLoader(false);
+                // showToast('Auto retrieval timeout $verificationId');
+                // Handle timeout
+              },
+            );
+          } catch (e) {
+            _setShowLoader(false);
+            // showToast('Error: $e');
+            // Handle other errors
+          }
         });
   }
 
-  Future<void> verifyOTP(
-      String verificationId, String otp, BuildContext context) async {
+  Future<void> verifyOTP(String otp, BuildContext context) async {
     validateConnectivity(
         context: context,
         provider: () async {
@@ -113,11 +126,14 @@ class AuthProvider extends ChangeNotifier {
               smsCode: otp,
             );
 
-            userCredential = await auth.signInWithCredential(credential);
+            UserCredential? userCredential =
+                await auth.signInWithCredential(credential);
 
-            if (userCredential?.user != null) {
+            if (userCredential.user != null) {
               _setShowLoader(false);
               _preferences.setBool("token", true);
+              _preferences.setString(
+                  "number", userCredential.user?.phoneNumber ?? "");
               showToast(
                 isSuccess: true,
                 "OTP verification successful",
@@ -147,6 +163,9 @@ class AuthProvider extends ChangeNotifier {
     try {
       await FirebaseAuth.instance.signOut();
       navigateRemoveUntil(context: context, to: Login());
+      _preferences.setBool("token", false);
+      _preferences.setString("number", "");
+      notifyListeners();
     } catch (e) {
       showToast('Error signing out. Try again.');
     }

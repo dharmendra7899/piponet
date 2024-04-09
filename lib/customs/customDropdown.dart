@@ -17,7 +17,7 @@ class CustomDropDown extends StatelessWidget {
     this.shouldShowTrailingArrow = false,
     this.imageColor = const Color(0xffE01B22),
     required this.onChange,
-    required this.dropDownInitialValue,
+    this.dropDownInitialValue,
   }) : super(key: key);
 
   final bool shouldShowBorder;
@@ -25,7 +25,7 @@ class CustomDropDown extends StatelessWidget {
   final bool showSearchBar;
   final bool isClicked;
   final String dropdownHeading;
-  final String dropDownInitialValue;
+  final String? dropDownInitialValue;
   final List<String> dropDownList;
   final String hintText;
   final Function onChange;
@@ -61,29 +61,44 @@ class CustomDropDown extends StatelessWidget {
         ),
         subtitle: DropdownButtonHideUnderline(
           child: DropdownButton(
-            style: TextStyle(
-              fontSize: 16,
-              color: appColors.textColor,
-              fontWeight: FontWeight.w500,
-              fontFamily: "Inter",
-            ),
+            selectedItemBuilder: (_) {
+              return dropDownList
+                  .map<Widget>((String item) {
+                    return Text(
+                      item,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: appColors.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Inter",
+                      ),
+                    );
+                  })
+                  .toSet()
+                  .toList();
+            },
+            items: dropDownList
+                .map((String item) {
+                  return DropdownMenuItem(
+                    value: item,
+                    child: Text(item),
+                  );
+                })
+                .toSet()
+                .toList(),
+            isExpanded: true,
+            isDense: true,
             hint: Text(
               hintText,
               style: TextStyle(
-                color: appColors.textColor,
+                color: appColors.appGray,
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
                 fontFamily: "Inter",
               ),
             ),
-            items: dropDownList.map((String item) {
-              return DropdownMenuItem(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            isExpanded: true,
-            isDense: true,
             onChanged: (String? newValue) {
               onChange(newValue);
             },

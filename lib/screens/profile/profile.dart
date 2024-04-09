@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piponet/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../customs/app_button.dart';
 import '../../customs/app_text.dart';
@@ -26,9 +27,13 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    var provider = Provider.of<AuthProvider>(context, listen: false);
-    phoneController.text = provider.userCredential?.user?.phoneNumber ?? "";
+    preferenceData();
     super.initState();
+  }
+
+  preferenceData() async {
+    var state = AuthProvider(await SharedPreferences.getInstance());
+    phoneController.text = state.getNumber;
   }
 
   @override
@@ -126,6 +131,7 @@ class _ProfileState extends State<Profile> {
                                   controller: phoneController,
                                   isValid: (val) => val.isNotEmpty,
                                   headingText: "Mobile Number",
+                                  isReadOnly: true,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(10),

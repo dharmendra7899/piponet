@@ -69,7 +69,8 @@ class ApiClient {
     } else if (response.statusCode == 401) {
       navigateRemoveUntil(context: context!, to: Login());
     } else {
-      throw ServerError(response.statusCode, jsonDecode(response.body)['msg']);
+      throw ServerError(
+          response.statusCode, jsonDecode(response.body)['message']);
     }
     return null;
   }
@@ -98,7 +99,8 @@ class ApiClient {
     } else if (response.statusCode == 401) {
       navigateRemoveUntil(context: context!, to: Login());
     } else {
-      throw ServerError(response.statusCode, jsonDecode(response.body)['msg']);
+      throw ServerError(
+          response.statusCode, jsonDecode(response.body)['message']);
     }
     return null;
   }
@@ -125,7 +127,8 @@ class ApiClient {
     } else if (response.statusCode == 401) {
       navigateRemoveUntil(context: context!, to: Login());
     } else {
-      throw ServerError(response.statusCode, jsonDecode(response.body)['msg']);
+      throw ServerError(
+          response.statusCode, jsonDecode(response.body)['message']);
     }
     return null;
   }

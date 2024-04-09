@@ -50,7 +50,7 @@ class _WalkThroughState extends State<WalkThrough> {
                 onPageChanged: (value) {
                   setState(() {
                     controller.animateToPage(value,
-                        duration: const Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 100),
                         curve: Curves.easeIn);
                     _currentPage = value;
                   });
@@ -149,7 +149,7 @@ class _WalkThroughState extends State<WalkThrough> {
     setState(() {
       _currentPage = _currentPage + 1;
       controller.animateToPage(_currentPage,
-          duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
+          duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
     });
   }
 

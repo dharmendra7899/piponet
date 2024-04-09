@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:piponet/customs/validator.dart';
+import 'package:piponet/screens/auth/login.dart';
 import 'package:provider/provider.dart';
 
 import '../../customs/app_button.dart';
 import '../../customs/app_text.dart';
+import '../../customs/navigation.dart';
 import '../../providers/auth_provider.dart';
 import '../../styles/app_colors.dart';
 
@@ -49,11 +51,32 @@ class OTPVerify extends StatelessWidget {
               const SizedBox(
                 height: 4,
               ),
-              appText(
-                  title: "We have send an OTP on given number +91 $number",
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  color: appColors.appGray),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'We have send an OTP on given number +91 $number  ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          color: appColors.appGray),
+                    ),
+                    WidgetSpan(
+                      child: InkWell(
+                        onTap: () {
+                          navigateRemoveUntil(context: context, to: Login());
+                        },
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 16,
+                          color: appColors.redColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 40,
               ),
@@ -121,7 +144,7 @@ class OTPVerify extends StatelessWidget {
                       height: 45,
                       borderRadius: 14,
                       onPressed: () {
-                        authProvider.verifyOTP("verificationId",
+                        authProvider.verifyOTP(
                             otpController.text.toString(), context);
                       },
                       fontSize: 15,

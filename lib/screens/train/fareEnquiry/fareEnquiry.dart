@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:piponet/screens/train/fareEnquiry/fareDetails.dart';
 import 'package:provider/provider.dart';
 
 import '../../../customs/app_button.dart';
 import '../../../customs/app_text.dart';
-import '../../../customs/customDropdown.dart';
-import '../../../customs/navigation.dart';
+import '../../../customs/customAutocompleteDropDown.dart';
+import '../../../customs/toast_message.dart';
+import '../../../customs/validate_connectivity.dart';
 import '../../../customs/validator.dart';
 import '../../../providers/fare_enquiry_provider.dart';
 import '../../../styles/app_colors.dart';
@@ -85,12 +85,13 @@ class _FareEnquiryState extends State<FareEnquiry> {
                               const SizedBox(
                                 height: 50,
                               ),
-                              CustomDropDown(
+                              CustomAutocompleteDropDown(
                                 dropdownHeading: "From",
                                 dropDownInitialValue: fareProvider.fromStation,
                                 dropDownList: fareProvider.fromStationList,
                                 hintText: "Select from station",
                                 height: 55,
+                                onTextChange: (val) {},
                                 onChange: (val) {
                                   setState(() {
                                     fareProvider.fromStation = val.toString();
@@ -100,12 +101,13 @@ class _FareEnquiryState extends State<FareEnquiry> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              CustomDropDown(
+                              CustomAutocompleteDropDown(
                                 dropdownHeading: "To",
                                 dropDownInitialValue: fareProvider.toStation,
                                 dropDownList: fareProvider.toStationList,
                                 hintText: "Select to station",
                                 height: 55,
+                                onTextChange: (val) {},
                                 onChange: (val) {
                                   setState(() {
                                     fareProvider.toStation = val.toString();
@@ -126,6 +128,9 @@ class _FareEnquiryState extends State<FareEnquiry> {
                                       width: 0.7, color: appColors.borderColor),
                                 ),
                                 child: ListTile(
+                                    onTap: () {
+                                      fareProvider.selectTrainDate(context);
+                                    },
                                     contentPadding: EdgeInsets.zero,
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -4),
@@ -144,10 +149,13 @@ class _FareEnquiryState extends State<FareEnquiry> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         appText(
-                                            title: "14-03-2024",
+                                            title: fareProvider.date,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16,
-                                            color: appColors.textColor),
+                                            color: fareProvider.date ==
+                                                    "DD-MM-YYYY"
+                                                ? appColors.appGray
+                                                : appColors.textColor),
                                         Image.asset(
                                           "assets/images/calender.png",
                                           height: 20,
@@ -163,11 +171,23 @@ class _FareEnquiryState extends State<FareEnquiry> {
                                 width: 180,
                                 child: AppButton(
                                   onPressed: () {
-                                    navigateTo(
+                                    validateConnectivity(
                                         context: context,
-                                        to: FareDetails(
-                                          title: "Fare Details",
-                                        ));
+                                        provider: () async {
+                                          if (fareProvider.fromStation ==
+                                              null) {
+                                            showToast("Select from Stations");
+                                          } else if (fareProvider.toStation ==
+                                              null) {
+                                            showToast("Select to Stations");
+                                          } else if (fareProvider.date ==
+                                              "DD-MM-YYYY") {
+                                            showToast("Select Date first");
+                                          } else {
+                                            fareProvider
+                                                .getFareEnquiry(context);
+                                          }
+                                        });
                                   },
                                   borderRadius: 13,
                                   title: "Find",

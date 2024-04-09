@@ -19,12 +19,62 @@ class Bookings extends StatefulWidget {
 
 class _BookingsState extends State<Bookings> {
   String? selectedTab;
+  // BannerAd? bannerAd;
+  // bool isLoaded = false;
 
   @override
   void initState() {
-    super.initState();
     selectedTab = widget.type;
+    super.initState();
   }
+/*
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    bannerAd = BannerAd(
+        size: AdSize.banner,
+
+        //test id
+        // adUnitId: "ca-app-pub-3940256099942544/6300978111",
+        //ca-app-pub-5951042120036435/4393143791
+        //mine alok
+        adUnitId: "ca-app-pub-5951042120036435/4393143791",
+        listener: BannerAdListener(
+          onAdLoaded: (val) {
+            debugPrint("add loaded ");
+            setState(() {
+              isLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (val, ee) {
+            debugPrint("failed to load error");
+            debugPrint(ee.toString());
+          },
+          onAdClosed: (Ad ad) {
+            debugPrint("09090090900909090009009090");
+            // debugPrint(_controller.value.isPlaying.toString());
+            // _controller.play();
+          },
+          onAdOpened: (Ad ad) {
+            debugPrint("add opened 454545445454");
+            // _controller.play();
+          },
+        ),
+        request: AdRequest());
+    bannerAd!.load();
+  }
+
+  final BannerAdListener listener = BannerAdListener(
+    onAdLoaded: (Ad ad) => print('Ad loaded.566565656565656565'),
+    onAdFailedToLoad: (Ad ad, LoadAdError error) {
+      ad.dispose();
+      print('Ad failed to load2222222222222222222222222222: $error');
+    },
+    onAdOpened: (Ad ad) => print('Ad opened.1111111111111111111'),
+    onAdClosed: (Ad ad) => print('Ad closed.w2213343871234565342  123'),
+    onAdImpression: (Ad ad) => print('Ad impression.122333444444444444444'),
+  );*/
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +102,18 @@ class _BookingsState extends State<Bookings> {
                     color: appColors.colorPrimary,
                   ),
                 ),
+                // Positioned(
+                //   top: 0,
+                //   right: 0,
+                //   left: 0,
+                //   child: Container(
+                //     color: Colors.red,
+                //     height: 40,
+                //     child: AdWidget(
+                //       ad: bannerAd!,
+                //     ),
+                //   ),
+                // ),
                 Positioned(
                     top: MediaQuery.of(context).size.height * 0.06,
                     left: 0,

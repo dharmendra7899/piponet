@@ -65,7 +65,7 @@ class Tickets extends StatelessWidget {
                             context: context,
                             to: LiveStatus(
                               image: "assets/images/live.png",
-                              hintText: "Train Name",
+                              hintText: "Train Name/Number",
                               titleName: "Live Status",
                               onPressed: () {},
                             ));
